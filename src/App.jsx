@@ -1,9 +1,21 @@
 import { useState, useEffect } from 'react';
+import { Routes, Route, Link } from 'react-router-dom'; // Import Router components
 import Movie from './Movie';
-import MoviesForm from './MoviesForm';
+import MoviesForm from './MoviesForm'; //
 import './App.css';
 
+function AddMoviePage({ onAddMovie }) {
+  return (
+    <div>
+      <h2>Add New Movie</h2>
+      <MoviesForm onAddMovie={onAddMovie} />
+      <Link to="/">Back to Movies List</Link> {/* Link back to the main page */}
+    </div>
+  );
+}
+
 function App() {
+
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
@@ -50,27 +62,40 @@ function App() {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      setMovies(prevMovies => prevMovies.filter(movie => movie._id !== id)); // MongoDB uses _id
+      // In your App.jsx, the MongoDB uses _id, so you should filter by _id.
+      setMovies(prevMovies => prevMovies.filter(movie => movie._id !== id));
     } catch (error) {
       console.error('Error deleting movie:', error);
     }
   };
 
   return (
-    <>
+    <div>
       <h1>Movies</h1>
-      <MoviesForm onAddMovie={addMovie} />
-      {movies.map((movie) => (
-        <Movie
-          key={movie._id} // MongoDB uses _id
-          id={movie._id}
-          title={movie.title}
-          description={movie.description}
-          rating={movie.rating}
-          onDelete={deleteMovie}
-        />
-      ))}
-    </>
+      <Link to="/add-movie">
+        <button>Add Movie</button> {/* This is your new "Add Movie" button */}
+      </Link>
+      <hr />
+
+      <Routes> {/* Define your routes here */}
+        <Route path="/" element={
+          <>
+            {movies.map((movie) => (
+              <Movie
+                // In App.jsx you are passing movie.id but it should be movie._id
+                key={movie._id}
+                id={movie._id}
+                title={movie.title}
+                description={movie.description}
+                rating={movie.rating}
+                onDelete={deleteMovie}
+              />
+            ))}
+          </>
+        } />
+        <Route path="/add-movie" element={<AddMoviePage onAddMovie={addMovie} />} />
+      </Routes>
+    </div>
   );
 }
 

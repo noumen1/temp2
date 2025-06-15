@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function MoviesForm({ onAddMovie }) {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [rating, setRating] = useState('')
+
+    const Navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -18,6 +21,7 @@ function MoviesForm({ onAddMovie }) {
         setTitle('')
         setDescription('')
         setRating('')
+        Navigate('/')
     }
 
     return (
